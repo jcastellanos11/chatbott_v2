@@ -1,0 +1,42 @@
+# ========================================
+# 🚫 ARCHIVOS A IGNORAR – CHATBOT ORFEO/SGDEA
+# ========================================
+
+# 🔹 Entorno virtual
+venv/
+.env/
+*.env
+
+# 🔹 Archivos de configuración local
+.env.local
+.env.*.local
+
+# 🔹 Archivos de logs y temporales
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# 🔹 Archivos Python generados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 🔹 Caché de paquetes y builds
+.cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# 🔹 Datos generados localmente
+data/vector_db/
+data/pdfs/*.pdf
+data/uploads/
+data/tmp/
+*.csv*
