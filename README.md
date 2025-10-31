@@ -76,6 +76,8 @@ sudo apt install tesseract-ocr tesseract-ocr-spa poppler-utils libmagic1
    source venv/bin/activate   # (Windows: venv\Scripts\activate)
    ```
 
+   rm -rf data/vector_db
+
 3. **Instala las dependencias**
 
    ```bash

@@ -6,7 +6,10 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
-from ..utils.config import OPENAI_API_KEY, PDF_PATH, VECTOR_DB_PATH
+from ..utils.config import OPENAI_API_KEY, PDF_PATH, VECTOR_DB_PATH, ANTHROPIC_API_KEY
+
+from langchain_anthropic import ChatAnthropic
+
 
 
 def load_documents():
@@ -107,6 +110,53 @@ def get_chatbot():
         """
     )
 
+
+    chain = (
+        {"context": retriever, "question": RunnablePassthrough()}
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+
+    return chain
+
+
+
+def get_chatbot_anthropic():
+    """
+    Construye el chatbot usando Anthropic Claude.
+    Ideal para leer PDFs extensos con estructuras complejas.
+    """
+    vectorstore = get_vector_store()
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 8})
+
+    # llm = ChatAnthropic(
+    #     model="claude-3-5-sonnet-20240620",  # puedes cambiar a claude-3-opus para más precisión
+    #     temperature=0,
+    #     api_key=ANTHROPIC_API_KEY
+    # )
+
+    llm = ChatAnthropic(
+        model="claude-3-haiku-20240307",
+        temperature=0,
+        api_key=ANTHROPIC_API_KEY
+    )
+
+    prompt = ChatPromptTemplate.from_template(
+        """Eres un asistente experto en el sistema Orfeo–SGDEA.
+        Usa únicamente la información del contexto siguiente (extraída del manual en PDF).
+        Si el contexto incluye tablas o formatos, reprodúcelos claramente en la respuesta.
+
+        Responde siempre en español técnico y preciso.
+        Si no hay suficiente información, di: "No tengo información suficiente para responder."
+
+        CONTEXTO:
+        {context}
+
+        PREGUNTA:
+        {question}
+        """
+    )
 
     chain = (
         {"context": retriever, "question": RunnablePassthrough()}

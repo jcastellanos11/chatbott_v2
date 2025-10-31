@@ -1,9 +1,12 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from ..services.openai_service import get_chatbot
+# from ..services.openai_service import get_chatbot
+
+from ..services.openai_service import get_chatbot_anthropic
+qa_chain = get_chatbot_anthropic()
 
 router = APIRouter()
-qa_chain = get_chatbot()
+# qa_chain = get_chatbot()
 
 class Question(BaseModel):
     question: str
