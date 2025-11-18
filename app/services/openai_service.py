@@ -9,7 +9,7 @@ from langchain_core.output_parsers import StrOutputParser
 from ..utils.config import OPENAI_API_KEY, PDF_PATH, VECTOR_DB_PATH, ANTHROPIC_API_KEY
 
 from langchain_anthropic import ChatAnthropic
-
+from langchain_community.embeddings import HuggingFaceEmbeddings  # Agrega esta importación
 
 
 def load_documents():
@@ -48,11 +48,9 @@ def split_docs(docs):
 def get_vector_store():
     """
     Crea o carga la base vectorial persistente (ChromaDB)
-    usando embeddings de OpenAI.
+    usando embeddings open-source (HuggingFace).
     """
-    # embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=OPENAI_API_KEY)
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-large", api_key=OPENAI_API_KEY)
-
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
     print(" get_vector_store...")
 
@@ -73,52 +71,49 @@ def get_vector_store():
         vectorstore = Chroma(
             persist_directory=VECTOR_DB_PATH, embedding_function=embeddings
         )
-    
-   
-
 
     return vectorstore
 
 
-def get_chatbot():
-    """
-    Construye la cadena moderna de LangChain para preguntas y respuestas.
-    """
-    vectorstore = get_vector_store()
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 8})
+# def get_chatbot():
+#     """
+#     Construye la cadena moderna de LangChain para preguntas y respuestas.
+#     """
+#     vectorstore = get_vector_store()
+#     retriever = vectorstore.as_retriever(search_kwargs={"k": 8})
 
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=OPENAI_API_KEY)
+#     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=OPENAI_API_KEY)
 
-    prompt = ChatPromptTemplate.from_template(
-        """Eres un asistente experto en el sistema Orfeo-SGDEA.
-        Tu objetivo es responder *exclusivamente* usando la información del contexto siguiente,
-        que proviene directamente del manual de usuario del SGDEA.
+#     prompt = ChatPromptTemplate.from_template(
+#         """Eres un asistente experto en el sistema Orfeo-SGDEA.
+#         Tu objetivo es responder *exclusivamente* usando la información del contexto siguiente,
+#         que proviene directamente del manual de usuario del SGDEA.
 
-        - Si el contexto contiene una tabla, formato o estructura específica, reprodúcela de forma clara.
-        - No generalices ni inventes datos.
-        - Si el contexto no tiene información suficiente, responde: "No tengo información suficiente para responder."
-        - Siempre responde en español técnico y claro.
-        - Responde siempre usando formato Markdown cuando el contexto tenga listas o estructuras.
+#         - Si el contexto contiene una tabla, formato o estructura específica, reprodúcela de forma clara.
+#         - No generalices ni inventes datos.
+#         - Si el contexto no tiene información suficiente, responde: "No tengo información suficiente para responder."
+#         - Siempre responde en español técnico y claro.
+#         - Responde siempre usando formato Markdown cuando el contexto tenga listas o estructuras.
 
-        Contexto:
-        {context}
+#         Contexto:
+#         {context}
 
-        Pregunta:
-        {question}
+#         Pregunta:
+#         {question}
 
         
-        """
-    )
+#         """
+#     )
 
 
-    chain = (
-        {"context": retriever, "question": RunnablePassthrough()}
-        | prompt
-        | llm
-        | StrOutputParser()
-    )
+#     chain = (
+#         {"context": retriever, "question": RunnablePassthrough()}
+#         | prompt
+#         | llm
+#         | StrOutputParser()
+#     )
 
-    return chain
+#     return chain
 
 
 

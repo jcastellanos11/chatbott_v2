@@ -62,6 +62,8 @@ sudo apt install tesseract-ocr tesseract-ocr-spa poppler-utils libmagic1
 
 ## 🧩 Instalación
 
+# sudo pacman -Syu tesseract tesseract-data-spa tesseract-data-eng
+
 1. **Clona el repositorio y entra al proyecto**
 
    ```bash
