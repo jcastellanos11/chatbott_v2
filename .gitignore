@@ -40,3 +40,4 @@ data/pdfs/*.pdf
 data/uploads/
 data/tmp/
 *.csv*
+data/vector_db_unificado/chroma.sqlite3
