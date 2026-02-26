@@ -98,6 +98,45 @@ sudo apt install tesseract-ocr tesseract-ocr-spa poppler-utils libmagic1
 
 ---
 
+## 🗄️ Reconstrucción de la base vectorial
+
+El script `app/rag/rebuild_vector_db.py` permite regenerar la base vectorial unificada a partir de los PDFs y los fragmentos de código.
+
+### ¿Cuándo usarlo?
+- Cuando agregues, elimines o modifiques archivos PDF en `data/pdfs/`.
+- Cuando actualices el archivo `data/code/code_chunks.json`.
+- Para limpiar y reconstruir la base vectorial desde cero.
+
+### Requisitos
+- Los PDFs deben estar en `data/pdfs/`.
+- El archivo `data/code/code_chunks.json` debe existir y contener los fragmentos de código.
+- Las dependencias deben estar instaladas (ver sección de instalación).
+
+### Ejecución
+
+```zsh
+python app/rag/rebuild_vector_db.py
+```
+
+El script:
+1. Carga los PDFs y los fragmentos de código.
+2. Fragmenta los PDFs en "chunks".
+3. Une todos los documentos (PDF + código).
+4. Elimina la base vectorial anterior (`data/vector_db_unificado`).
+5. Crea una nueva base vectorial persistente con ChromaDB.
+
+Al finalizar, verás mensajes de progreso y confirmación:
+- Documentos cargados y fragmentados.
+- Base vectorial creada y guardada.
+
+### Parámetros principales
+- Carpeta de PDFs: `data/pdfs/`
+- Fragmentos de código: `data/code/code_chunks.json`
+- Base vectorial: `data/vector_db_unificado`
+- Modelo de embeddings: `sentence-transformers/all-MiniLM-L6-v2`
+
+---
+
 ## ▶️ Ejecución
 
 Inicia el servidor de desarrollo con:
